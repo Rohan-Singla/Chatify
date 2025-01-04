@@ -1,12 +1,12 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ApiTest from "./components/ApiTest";
+import Home from "./pages/Home";
 
 function App() {
   return (
     <Router>
       <Routes>
         {/* {/* <Route path="/" element={<HomePage />} /> */}
-        <Route path="/" element={<ApiTest />} /> 
+        <Route path="/" element={<Home />} /> 
       </Routes>
     </Router>
   );
