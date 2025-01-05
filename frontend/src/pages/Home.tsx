@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
 import RoomList from '../components/RoomList'
 import Footer from '../components/Footer'
+import { io } from 'socket.io-client';
 
 export default function Home() {
   const [username, setUsername] = useState('')
@@ -14,11 +15,30 @@ export default function Home() {
   const [roomname, setroomname] = useState('')
   const [roomtype, setroomtype] = useState('')
   const [loading, setloading] = useState(false)
+  const [socketId, setSocketId] = useState(null);
+
+  useEffect(() => {
+    // Connect to the backend WebSocket server
+    const socket = io(`http://localhost:8000`);
+
+    // Listen for the "your_socket_id" event
+    socket.on("your_socket_id", (id) => {
+      console.log("Socket ID received:", id);
+      setSocketId(id);
+    });
+
+    // Clean up on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
 
   const handleJoinRoom = (e: React.FormEvent) => {
     e.preventDefault()
     console.log('Joining room', roomId, 'as', username)
   }
+
 
   const toggleRoomMode = (mode: boolean) => {
     setloading(true)
