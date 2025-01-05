@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import Header from '../components/Header'
 import Hero from '../components/Hero'
-import RoomList from '../components/RoomList'
+// import RoomList from '../components/RoomList'
 import Footer from '../components/Footer'
 import { io } from 'socket.io-client';
 
@@ -13,7 +13,7 @@ export default function Home() {
   const [roomId, setRoomId] = useState('')
   const [createroom, setroom] = useState(false)
   const [roomname, setroomname] = useState('')
-  const [roomtype, setroomtype] = useState('')
+  // const [roomtype, setroomtype] = useState('')
   const [loading, setloading] = useState(false)
   const [socketId, setSocketId] = useState(null);
 
@@ -45,12 +45,13 @@ export default function Home() {
     setTimeout(() => {
       setroom(mode)
       setloading(false)
-    }, 200) // Simulate a 1-second loading time
+    }, 500) // Simulate a 1-second loading time
   }
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-gray-100">
       <Header />
+      <div className='flex justify-center items-center w-full h-[80dvh]'>
       <main className="flex flex-col items-center">
         {loading && <div className="text-center text-xl h-40 flex justify-center items-center">Loading...</div>}
         {!loading && (
@@ -79,7 +80,7 @@ export default function Home() {
                   className="w-full p-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
                   required
                 />
-                <select
+                {/* <select
                   value={roomtype}
                   onChange={(e) => setroomtype(e.target.value)}
                   className="w-full cursor-pointer p-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-gray-600 mb-4"
@@ -87,7 +88,7 @@ export default function Home() {
                   <option value="">Select Room Type</option>
                   <option value="public">Public</option>
                   <option value="private">Private</option>
-                </select>
+                </select> */}
                 <div className="flex items-center space-y-4 p-2 rounded-lg shadow-lg flex-col mx-auto">
                   <button
                     type="submit"
@@ -147,8 +148,9 @@ export default function Home() {
             )}
           </motion.div>
         )}
-        <RoomList />
+        {/* <RoomList /> */}
       </main>
+      </div>
       <Footer />
     </div>
   )

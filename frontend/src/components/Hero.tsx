@@ -7,7 +7,7 @@ export default function Hero() {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.5 }}
     >
-      <h2 className="lg:text-4xl text-2xljustify-between font-bold mb-4">Welcome to Chatify</h2>
+      <h2 className="lg:text-4xl text-2xl justify-between font-bold mb-4">Welcome to Chatify</h2>
       <p className="text-xl">Connect with friends in real-time chat rooms.</p>
     </motion.div>
   )

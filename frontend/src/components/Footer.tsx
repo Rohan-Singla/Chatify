@@ -7,7 +7,7 @@ export default function Footer() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="bg-zinc-900 text-gray-300 p-5 mt-8 relative h-full bottom-0 w-full"
+            className="bg-zinc-900 text-gray-300 p-5 mt-8 fixed min-h-16 bottom-0 w-full"
         >
             <div className="container mx-auto flex flex-col text-lg md:flex-row justify-between items-center">
                 <p className="mb-2 md:mb-0">&copy; 2025 Chatify. All rights reserved.</p>
