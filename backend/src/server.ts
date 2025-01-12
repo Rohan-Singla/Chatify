@@ -5,7 +5,7 @@ import connectDB from './config/db';
 import userRoutes from './routes/UserRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-
+import roomRoutes from './routes/RoomRoute';
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -32,18 +32,15 @@ io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
   // Listen for a message from the client
   socket.emit("your_socket_id", socket.id);
-  socket.on("send_message", (data) => {
-      console.log(data);
-      socket.emit("receive_message", data); // Broadcast message to all connected clients
-  });
-
+  
   // Handle disconnection
   socket.on("disconnect", () => {
-      console.log(`User disconnected: ${socket.id}`);
+    console.log(`User disconnected: ${socket.id}`);
   });
 });
 
 app.use('/api', userRoutes);
+app.use('/api/rooms', roomRoutes);
 
 const PORT = process.env.PORT || 8000;
 server.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));

@@ -7,6 +7,7 @@ import Hero from '../components/Hero'
 // import RoomList from '../components/RoomList'
 import Footer from '../components/Footer'
 import { io } from 'socket.io-client';
+import api from '../utils/api'
 
 export default function Home() {
   const [username, setUsername] = useState('')
@@ -33,11 +34,53 @@ export default function Home() {
     };
   }, []);
 
-
-  const handleJoinRoom = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Joining room', roomId, 'as', username)
-  }
+  const handleCreateRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    if (!username || !roomname) {
+      alert("Both Username and Room Name are required.");
+      return;
+    }
+  
+    try {
+      const response = await api.post("/create-room", {
+        username,
+        room_name: roomname,
+      });
+  
+      if (response.status === 201) {
+        alert("Room created successfully!");
+        // You can redirect the user or handle other UI updates here
+      }
+    } catch (error) {
+      console.error(error);
+      alert("Failed to create room. Try again.");
+    }
+  };
+  const handleJoinRoom = async (e: React.FormEvent) => {
+    e.preventDefault();
+  
+    // if (!username || !roomname) {
+    //   alert("Both Username and Room Name are required.");
+    //   return;
+    // }
+  
+    // try {
+    //   const response = await api.post("/create-room", {
+    //     username,
+    //     room_name: roomname,
+    //   });
+  
+    //   if (response.status === 201) {
+    //     alert("Room created successfully!");
+    //     // You can redirect the user or handle other UI updates here
+    //   }
+    // } catch (error) {
+    //   console.error(error);
+    //   alert("Failed to create room. Try again.");
+    // }
+  };
+  
 
 
   const toggleRoomMode = (mode: boolean) => {
@@ -63,7 +106,7 @@ export default function Home() {
           >
             <Hero />
             {createroom && (
-              <form onSubmit={handleJoinRoom} className="mt-8 space-y-4">
+              <form onSubmit={handleCreateRoom} className="mt-8 space-y-4">
                 <input
                   type="text"
                   placeholder="Username"
