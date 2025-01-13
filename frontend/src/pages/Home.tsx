@@ -8,13 +8,14 @@ import Hero from '../components/Hero'
 import Footer from '../components/Footer'
 import { io } from 'socket.io-client';
 import api from '../utils/api'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
   const [username, setUsername] = useState('')
   const [roomId, setRoomId] = useState('')
   const [createroom, setroom] = useState(false)
   const [roomname, setroomname] = useState('')
-  // const [roomtype, setroomtype] = useState('')
   const [loading, setloading] = useState(false)
   const [socketId, setSocketId] = useState(null);
 
@@ -38,7 +39,7 @@ export default function Home() {
     e.preventDefault();
 
     if (!username || !roomname) {
-      alert("Both Username and Room Name are required.");
+      toast.error("Both Username and Room Name are required.");
       return;
     }
 
@@ -49,59 +50,69 @@ export default function Home() {
       });
 
       if (response.status === 201) {
-        alert("Room created successfully!");
-        console.log(response.data)
+        toast.success("Room created successfully!");
+        console.log(response.data);
       }
 
-    } catch (error : any) {
+    } catch (error: any) {
       if (error.status === 400) {
-        alert("Room Already Exists");
-        console.log(error)
+        toast.error("Room already exists.");
+        console.log(error);
       } else {
+        toast.error("An unexpected error occurred. Please try again.");
         console.error(error);
       }
     }
   };
+
   const handleJoinRoom = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(username, roomId)
+    if (!username || !roomId) {
+      toast.error("Both Username and Room ID are required.");
+      return;
+    }
 
-    // if (!username || !roomname) {
-    //   alert("Both Username and Room Name are required.");
-    //   return;
-    // }
+    try {
+      const response = await api.post("/rooms/join-room", { username, room_id: roomId });
 
-    // try {
-    //   const response = await api.post("/create-room", {
-    //     username,
-    //     room_name: roomname,
-    //   });
+      if (response.status === 200) {
+        toast.success("Joined the room successfully!");
+        console.log(response.data);
 
-    //   if (response.status === 201) {
-    //     alert("Room created successfully!");
-    //     // You can redirect the user or handle other UI updates here
-    //   }
-    // } catch (error) {
-    //   console.error(error);
-    //   alert("Failed to create room. Try again.");
-    // }
+        // Redirect or update state to show the room
+        // For example, redirect to the room page or load room details
+        // e.g., navigate(`/room/${roomId}`);
+      }
+    } catch (error: any) {
+      if (error.response && error.response.status === 404) {
+        toast.error("Room not found. Please check the Room ID.");
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
+      console.error(error);
+    }
   };
 
 
-
   const toggleRoomMode = (mode: boolean) => {
-    setloading(true)
+    setloading(true);
     setTimeout(() => {
-      setroom(mode)
-      setloading(false)
-    }, 500) // Simulate a 1-second loading time
-  }
+      setroom(mode);
+      setloading(false);
+    }, 500); // Simulate a 1-second loading time
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-black text-gray-100">
       <Header />
-      <div className='flex justify-center items-center w-full h-[80dvh]'>
+      <div className="flex justify-center items-center w-full h-[80dvh]">
         <main className="flex flex-col items-center">
-          {loading && <div className="text-center text-xl h-40 flex justify-center items-center">Loading...</div>}
+          {loading && (
+            <div className="text-center text-xl h-40 flex justify-center items-center">
+              Loading...
+            </div>
+          )}
           {!loading && (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -128,15 +139,6 @@ export default function Home() {
                     className="w-full p-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-gray-600"
                     required
                   />
-                  {/* <select
-                  value={roomtype}
-                  onChange={(e) => setroomtype(e.target.value)}
-                  className="w-full cursor-pointer p-2 bg-gray-800 border border-gray-700 rounded focus:outline-none focus:ring-2 focus:ring-gray-600 mb-4"
-                >
-                  <option value="">Select Room Type</option>
-                  <option value="public">Public</option>
-                  <option value="private">Private</option>
-                </select> */}
                   <div className="flex items-center space-y-4 p-2 rounded-lg shadow-lg flex-col mx-auto">
                     <button
                       type="submit"
@@ -196,10 +198,10 @@ export default function Home() {
               )}
             </motion.div>
           )}
-          {/* <RoomList /> */}
         </main>
       </div>
       <Footer />
+      <ToastContainer />
     </div>
-  )
+  );
 }
