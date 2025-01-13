@@ -5,7 +5,7 @@ import connectDB from './config/db';
 import userRoutes from './routes/UserRoutes';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import roomRoutes from './routes/RoomRoute';
+import roomRoutes from './routes/roomRoute';
 dotenv.config();
 const app = express();
 app.use(express.json());
