@@ -28,7 +28,10 @@ export default function Home() {
       console.log("Socket ID received:", id);
       setSocketId(id);
     });
-
+    // Handle user joined event
+    socket.on("user_joined", (data) => {
+      console.log(`${data.username} joined room ${data.roomId}`);
+    });
     // Clean up on component unmount
     return () => {
       socket.disconnect();

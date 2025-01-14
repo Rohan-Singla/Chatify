@@ -32,6 +32,12 @@ io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
   // Listen for a message from the client
   socket.emit("your_socket_id", socket.id);
+
+  socket.on("join_room", ({ roomId, username }) => {
+    socket.join(roomId); // User joins the room
+    console.log(`${username} joined room ${roomId}`);
+    io.to(roomId).emit("user_joined", { username, roomId }); // Notify others in the room
+  });
   
   // Handle disconnection
   socket.on("disconnect", () => {
