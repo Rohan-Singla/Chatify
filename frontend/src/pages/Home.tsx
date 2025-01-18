@@ -10,6 +10,7 @@ import { io } from 'socket.io-client';
 import api from '../utils/api'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { useNavigate } from 'react-router-dom'
 
 export default function Home() {
   const [username, setUsername] = useState('')
@@ -18,11 +19,9 @@ export default function Home() {
   const [roomname, setroomname] = useState('')
   const [loading, setloading] = useState(false)
   const [socketId, setSocketId] = useState(null);
-
+  const navigate = useNavigate();
+  const socket = io(`http://localhost:8000`);
   useEffect(() => {
-    // Connect to the backend WebSocket server
-    const socket = io(`http://localhost:8000`);
-
     // Listen for the "your_socket_id" event
     socket.on("your_socket_id", (id) => {
       console.log("Socket ID received:", id);
@@ -37,7 +36,7 @@ export default function Home() {
       socket.disconnect();
     };
   }, []);
-
+  console.log("Your Socked Id : ", socketId);
   const handleCreateRoom = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -45,16 +44,17 @@ export default function Home() {
       toast.error("Both Username and Room Name are required.");
       return;
     }
-
     try {
       const response = await api.post("/rooms/create-room", {
         username,
         room_name: roomname,
       });
-
+      
       if (response.status === 201) {
         toast.success("Room created successfully!");
         console.log(response.data);
+        const myroomid = response.data.room.room_id;
+        socket.emit("create_room", { myroomid , roomname, username });
       }
 
     } catch (error: any) {
@@ -78,14 +78,16 @@ export default function Home() {
 
     try {
       const response = await api.post("/rooms/join-room", { username, room_id: roomId });
-
+      
       if (response.status === 200) {
         toast.success("Joined the room successfully!");
         console.log(response.data);
-
+        const myroomid = response.data.room.room_id;
+        
+        socket.emit("join_room", { username, myroomid });
         // Redirect or update state to show the room
         // For example, redirect to the room page or load room details
-        // e.g., navigate(`/room/${roomId}`);
+        // navigate(`/room/${roomId}`, { state: { roomDetails: response.data } });
       }
     } catch (error: any) {
       if (error.response && error.response.status === 404) {

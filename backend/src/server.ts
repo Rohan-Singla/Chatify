@@ -33,7 +33,15 @@ io.on("connection", (socket) => {
   // Listen for a message from the client
   socket.emit("your_socket_id", socket.id);
 
+  socket.on("create_room", ({ roomId, roomName, username }) => {
+    console.log(`Creating room: ${roomId} by ${username}`);
+    socket.join(roomId); // User joins the room they created
+    console.log(`${username} created and joined room ${roomId}`);
+    io.to(roomId).emit("room_created", { roomId, roomName, username }); // Notify the creator
+  });
+
   socket.on("join_room", ({ roomId, username }) => {
+    console.log(roomId,username)
     socket.join(roomId); // User joins the room
     console.log(`${username} joined room ${roomId}`);
     io.to(roomId).emit("user_joined", { username, roomId }); // Notify others in the room

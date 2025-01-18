@@ -24,7 +24,7 @@ export const saveUser = async (req: Request, res: any) => {
   } catch (error: any) {
     console.error(error);
     if (error.code === 11000) {
-      return res.status(400).json({ message: "Room ID must be unique." });
+      return res.status(400).json({ message: "Some error occured." });
     }
     res.status(500).json({ message: "Failed to save user." });
   }
